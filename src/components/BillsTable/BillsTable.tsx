@@ -32,8 +32,8 @@ export function BillsTable({
   }
 
   return (
-    <div className="w-full overflow-auto rounded-xl border">
-      <table className="min-w-[800px] w-full text-sm">
+    <div className="panel">
+      <table className="table">
         <thead className="bg-muted/50">
           <tr>
             <th className="p-3 text-left cursor-pointer" onClick={() => handleSort('name')}>Name</th>
@@ -46,8 +46,8 @@ export function BillsTable({
           </tr>
         </thead>
         <tbody>
-          {bills.map((b) => (
-            <tr key={b.id} className="border-t hover:bg-muted/40">
+              {bills.map(b => (
+                <tr key={b.id} className="border-t hover:bg-muted/40 transition">
               <td className="p-3 cursor-pointer" onClick={() => handleRowClick(b.id)}>{b.name}</td>
               <td className="p-3">{b.merchant ?? '—'}</td>
               <td className="p-3">{b.amount} {b.currency}</td>
