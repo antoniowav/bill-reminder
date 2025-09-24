@@ -1,0 +1,42 @@
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String            @id @default(cuid())
+  email     String            @unique
+  createdAt DateTime          @default(now())
+  bills     Bill[]
+  reminder  ReminderSettings?
+}
+
+model Bill {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  merchant       String?
+  amount         Decimal  @db.Decimal(10, 2)
+  currency       String
+  cadence        String // "monthly" | "yearly" | "custom"
+  intervalMonths Int
+  nextDueAt      DateTime
+  category       String?
+  tags           String[] @db.Text
+  source         String // "manual" | "email" | "bank"
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ReminderSettings {
+  userId    String @id
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offsets   Int[]
+  digestDow Int
+}
