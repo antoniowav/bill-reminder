@@ -27,16 +27,16 @@ export default function SignUpPage() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password: pwd,
-      options: { emailRedirectTo: `${location.origin}/auth/callback` },
+      options: { emailRedirectTo: `${location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}` },
     });
 
     setLoading(false);
 
     if (error) return setError(error.message);
 
-    // If email confirmations are ON, user must click email link.
+    // If email confirmations are ON, user must click the email link.
     if (data.user && !data.session) {
-      setNotice("Check your inbox to confirm your email, then come back.");
+      setNotice("Check your inbox to confirm your email, then return here to continue.");
       return;
     }
 
@@ -44,33 +44,85 @@ export default function SignUpPage() {
     router.replace(redirect);
   }
 
+  function continueWithGoogle(prompt: "select_account" | "consent") {
+    const redirectParam = new URLSearchParams(window.location.search).get("redirect") || "/bills";
+    window.location.assign(
+      `/auth/google?redirect=${encodeURIComponent(redirectParam)}&prompt=${prompt}`
+    );
+  }
+
   return (
-    <main className="container-page py-12 space-y-6">
-      <h1 className="text-3xl font-semibold tracking-tight">Create your account</h1>
-
-      <form onSubmit={onSubmit} className="panel space-y-4 max-w-md">
-        <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+    <main className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
+      <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow">
+        <div className="text-center">
+          <h1 className="text-3xl font-semibold tracking-tight">Create your account</h1>
+          <p className="mt-2 text-sm text-neutral-500">
+            Start tracking your bills in minutes
+          </p>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="pwd">Password</Label>
-          <Input id="pwd" type="password" required value={pwd} onChange={(e) => setPwd(e.target.value)} />
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="pwd">Password</Label>
+            <Input
+              id="pwd"
+              type="password"
+              required
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          {notice && <p className="text-sm text-neutral-600">{notice}</p>}
+
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Creating…" : "Create account"}
+          </Button>
+        </form>
+
+        {/* Divider */}
+        <div className="relative py-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-neutral-500">or</span>
+          </div>
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        {notice && <p className="text-sm text-neutral-600">{notice}</p>}
+        {/* Google actions */}
+        <div className="space-y-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => continueWithGoogle("select_account")}
+          >
+            Continue with Google
+          </Button>
+        </div>
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Creating…" : "Create account"}
-        </Button>
-
-        <p className="text-sm text-neutral-500">
+        <p className="text-center text-sm text-neutral-500">
           Already have an account?{" "}
-          <Link href={`/sign-in?redirect=${encodeURIComponent(redirect)}`} className="underline">Sign in</Link>
+          <Link href={`/sign-in?redirect=${encodeURIComponent(redirect)}`} className="underline">
+            Sign in
+          </Link>
         </p>
-      </form>
+      </div>
     </main>
   );
 }
