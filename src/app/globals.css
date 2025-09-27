@@ -2,161 +2,161 @@
 
 /* define the color tokens shadcn components use */
 @theme {
-    --color-background: #ffffff;
-    --color-foreground: #0f172a; /* slate-900 */
-    --color-primary: #4f46e5; /* indigo-600 */
-    --color-primary-foreground: #ffffff;
-    --color-secondary: #f4f4f5; /* zinc-100 */
-    --color-secondary-foreground: #0f172a;
-    --color-accent: #eef2ff; /* indigo-50 */
-    --color-accent-foreground: #1f2937; /* gray-800 */
-    --color-muted: #f8fafc; /* slate-50 */
-    --color-muted-foreground: #64748b; /* slate-500 */
+  --color-background: #ffffff;
+  --color-foreground: #0f172a; /* slate-900 */
+  --color-primary: #4f46e5; /* indigo-600 */
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f4f4f5; /* zinc-100 */
+  --color-secondary-foreground: #0f172a;
+  --color-accent: #eef2ff; /* indigo-50 */
+  --color-accent-foreground: #1f2937; /* gray-800 */
+  --color-muted: #f8fafc; /* slate-50 */
+  --color-muted-foreground: #64748b; /* slate-500 */
 
-    --color-destructive: #ef4444; /* red-500 */
-    --color-destructive-foreground: #ffffff;
+  --color-destructive: #ef4444; /* red-500 */
+  --color-destructive-foreground: #ffffff;
 
-    --color-border: #e5e7eb; /* gray-200 */
-    --color-input: #e5e7eb;
-    --color-ring: #6366f1; /* indigo-500 focus ring */
+  --color-border: #e5e7eb; /* gray-200 */
+  --color-input: #e5e7eb;
+  --color-ring: #6366f1; /* indigo-500 focus ring */
 }
 
 :root.dark {
-    --color-background: #0b0f19;
-    --color-foreground: #e5e7eb;
-    --color-primary: #e5e7eb;
-    --color-primary-foreground: #0b0f19;
-    --color-secondary: #111827;
-    --color-secondary-foreground: #e5e7eb;
-    --color-accent: #111827;
-    --color-accent-foreground: #e5e7eb;
-    --color-muted: #111827;
-    --color-muted-foreground: #9ca3af;
+  --color-background: #0b0f19;
+  --color-foreground: #e5e7eb;
+  --color-primary: #e5e7eb;
+  --color-primary-foreground: #0b0f19;
+  --color-secondary: #111827;
+  --color-secondary-foreground: #e5e7eb;
+  --color-accent: #111827;
+  --color-accent-foreground: #e5e7eb;
+  --color-muted: #111827;
+  --color-muted-foreground: #9ca3af;
 
-    --color-destructive: #f87171;
-    --color-destructive-foreground: #0b0f19;
+  --color-destructive: #f87171;
+  --color-destructive-foreground: #0b0f19;
 
-    --color-border: #1f2937;
-    --color-input: #1f2937;
-    --color-ring: #e5e7eb;
+  --color-border: #1f2937;
+  --color-input: #1f2937;
+  --color-ring: #e5e7eb;
 }
 
 /* Light, readable base */
 html,
 body {
-    background: #fff;
-    color: #111;
+  background: #fff;
+  color: #111;
 }
 
 body::before {
-    content: "";
-    position: fixed;
-    inset: -20% -20% auto -20%;
-    height: 40vh;
-    pointer-events: none;
-    z-index: 0;
-    background:
-        radial-gradient(50% 50% at 20% 5%, #eef2ff 0%, transparent 70%),
-        radial-gradient(40% 40% at 90% 0%, #e0e7ff 0%, transparent 70%);
-    opacity: 0.9;
+  content: "";
+  position: fixed;
+  inset: -20% -20% auto -20%;
+  height: 40vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(50% 50% at 20% 5%, #eef2ff 0%, transparent 70%),
+    radial-gradient(40% 40% at 90% 0%, #e0e7ff 0%, transparent 70%);
+  opacity: 0.9;
 }
 
 /* Simple reusable surfaces */
 .card {
-    @apply rounded-2xl border border-neutral-200 bg-white shadow-sm;
+  @apply rounded-2xl border border-neutral-200 bg-white shadow-sm;
 }
 .card-muted {
-    @apply rounded-2xl border border-neutral-200 bg-neutral-50 shadow-sm;
+  @apply rounded-2xl border border-neutral-200 bg-neutral-50 shadow-sm;
 }
 
 /* Nice table defaults */
 .table {
-    @apply w-full text-sm;
+  @apply w-full text-sm;
 }
 .table thead th {
-    @apply bg-neutral-50 text-left font-medium text-neutral-600;
+  @apply bg-neutral-50  font-medium text-neutral-600;
 }
 .table th,
 .table td {
-    @apply p-3;
+  @apply p-3;
 }
 .table tbody tr {
-    @apply border-t border-neutral-200;
+  @apply border-t border-neutral-200;
 }
 .table tbody tr:hover {
-    @apply bg-neutral-50;
+  @apply bg-neutral-50;
 }
 
 /* Buttons (fallback if you aren’t using shadcn Button) */
 .btn {
-    @apply inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition border border-neutral-300 bg-white hover:bg-neutral-50 active:scale-[.99];
+  @apply inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition border border-neutral-300 bg-white hover:bg-neutral-50 active:scale-[.99];
 }
 .btn-primary {
-    @apply bg-black text-white border-black hover:opacity-90;
+  @apply bg-black text-white border-black hover:opacity-90;
 }
 
 /* --- Typographic rhythm & helpers (only utilities) --- */
 .h1 {
-    @apply text-4xl md:text-5xl font-semibold tracking-tight;
+  @apply text-4xl md:text-5xl font-semibold tracking-tight;
 }
 .h2 {
-    @apply text-2xl md:text-3xl font-semibold;
+  @apply text-2xl md:text-3xl font-semibold;
 }
 .h3 {
-    @apply text-xl font-medium;
+  @apply text-xl font-medium;
 }
 .muted {
-    @apply text-sm text-neutral-500;
+  @apply text-sm text-neutral-500;
 }
 
 /* Page container */
 .container-page {
-    @apply mx-auto max-w-5xl px-6;
+  @apply mx-auto max-w-5xl px-6;
 }
 
 /* Section header */
 .section-header {
-    @apply flex items-start justify-between gap-4;
+  @apply flex items-start justify-between gap-4;
 }
 /* don't @apply .h2; write utilities directly */
 .section-title {
-    @apply text-2xl md:text-3xl font-semibold;
+  @apply text-2xl md:text-3xl font-semibold;
 }
 /* don't @apply .muted; write utilities directly */
 .section-subtitle {
-    @apply text-sm text-neutral-500 mt-1;
+  @apply text-sm text-neutral-500 mt-1;
 }
 
 /* Panels (expand .card utilities directly; no @apply .card) */
 .panel {
-    @apply rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 md:p-6;
+  @apply rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 md:p-6;
 }
 .panel-muted {
-    @apply rounded-2xl border border-neutral-200 bg-neutral-50 shadow-sm p-4 md:p-6;
+  @apply rounded-2xl border border-neutral-200 bg-neutral-50 shadow-sm p-4 md:p-6;
 }
 
 /* Empty state (expand utilities; no @apply .card-muted) */
 .empty {
-    @apply rounded-2xl border border-neutral-200 bg-neutral-50 shadow-sm p-8 text-center;
+  @apply rounded-2xl border border-neutral-200 bg-neutral-50 shadow-sm p-8 text-center;
 }
 .empty h3 {
-    @apply font-medium;
+  @apply font-medium;
 }
 .empty p {
-    @apply text-sm text-neutral-500 mt-1;
+  @apply text-sm text-neutral-500 mt-1;
 }
 
 /* Gentle motion */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(4px);
-    }
-    to {
-        opacity: 1;
-        transform: none;
-    }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .fade-in {
-    animation: fadeIn 0.2s ease-out both;
+  animation: fadeIn 0.2s ease-out both;
 }

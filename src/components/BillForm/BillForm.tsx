@@ -3,114 +3,113 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Cadence } from "@/shared/types/billing";
+import { useForm } from "react-hook-form";
 
-export interface BillFormValues {
+export type Cadence = "monthly" | "yearly" | "custom";
+
+export type BillFormValues = {
   name: string;
   merchant?: string;
   amount: number;
   currency: string;
   cadence: Cadence;
   intervalMonths: number;
-  nextDueAt: string; // yyyy-mm-dd or ISO
+  nextDueAt: string; // ISO or YYYY-MM-DD
   category?: string;
   tags?: string[];
-}
+};
 
 export interface BillFormProps {
-  initial?: BillFormValues;
-  isSubmitting: boolean;
-  onSubmit: (values: BillFormValues) => void;
+  /** Preferred prop for editing/seed values */
+  initialValues?: BillFormValues;
+  /** Back-compat alias: lets callers pass defaultValues too */
+  defaultValues?: BillFormValues;
+  isSubmitting?: boolean;
+  submitLabel?: string;
+  onSubmit: (values: BillFormValues) => void | Promise<void>;
   onCancel: () => void;
 }
 
-export function BillForm({ initial, isSubmitting, onSubmit, onCancel }: BillFormProps) {
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-
-    const values: BillFormValues = {
-      name: String(form.get("name") ?? ""),
-      merchant: String(form.get("merchant") ?? ""),
-      amount: Number(form.get("amount") ?? 0),
-      currency: String(form.get("currency") ?? "EUR"),
-      cadence: (form.get("cadence") ?? "monthly") as Cadence,
-      intervalMonths: Number(form.get("intervalMonths") ?? 1),
-      nextDueAt: String(form.get("nextDueAt") ?? ""),
-      category: String(form.get("category") ?? ""),
-      tags: String(form.get("tags") ?? "")
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
+export function BillForm({
+  initialValues,
+  defaultValues,
+  isSubmitting = false,
+  submitLabel,
+  onSubmit,
+  onCancel,
+}: BillFormProps) {
+  const seed: BillFormValues =
+    initialValues ??
+    defaultValues ?? {
+      name: "",
+      merchant: "",
+      amount: 0,
+      currency: "EUR",
+      cadence: "monthly",
+      intervalMonths: 1,
+      nextDueAt: new Date().toISOString().slice(0, 10),
+      category: "",
+      tags: [],
     };
 
-    onSubmit(values);
-  }
+  const { register, handleSubmit, formState } = useForm<BillFormValues>({
+    defaultValues: seed,
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" defaultValue={initial?.name} placeholder="Name" required />
-        </div>
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="space-y-1.5">
+        <Label htmlFor="name">Name</Label>
+        <Input id="name" {...register("name", { required: true })} />
+      </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="merchant">Merchant</Label>
-          <Input id="merchant" name="merchant" defaultValue={initial?.merchant} placeholder="Merchant" />
-        </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="merchant">Merchant</Label>
+        <Input id="merchant" {...register("merchant")} />
+      </div>
 
+      <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label htmlFor="amount">Amount</Label>
-          <Input id="amount" name="amount" type="number" step="0.01" defaultValue={initial?.amount} placeholder="Amount" required />
+          <Input id="amount" type="number" step="0.01" {...register("amount", { valueAsNumber: true })} />
         </div>
-
         <div className="space-y-1.5">
           <Label htmlFor="currency">Currency</Label>
-          <Input id="currency" name="currency" defaultValue={initial?.currency ?? "EUR"} placeholder="EUR" required />
+          <Input id="currency" {...register("currency")} />
         </div>
+      </div>
 
+      <div className="grid grid-cols-3 gap-3">
         <div className="space-y-1.5">
           <Label htmlFor="cadence">Cadence</Label>
-          <select
-            id="cadence"
-            name="cadence"
-            defaultValue={initial?.cadence ?? "monthly"}
-            className="input select w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-neutral-400 focus:ring-2 focus:ring-neutral-200"
-          >
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-            <option value="custom">Custom</option>
-          </select>
+          <Input id="cadence" {...register("cadence")} />
         </div>
-
         <div className="space-y-1.5">
           <Label htmlFor="intervalMonths">Interval (months)</Label>
-          <Input id="intervalMonths" name="intervalMonths" type="number" min={1} defaultValue={initial?.intervalMonths ?? 1} />
+          <Input
+            id="intervalMonths"
+            type="number"
+            {...register("intervalMonths", { valueAsNumber: true })}
+          />
         </div>
-
         <div className="space-y-1.5">
           <Label htmlFor="nextDueAt">Next due</Label>
-          <Input id="nextDueAt" name="nextDueAt" type="date" defaultValue={initial?.nextDueAt?.slice(0, 10)} required />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="category">Category</Label>
-          <Input id="category" name="category" defaultValue={initial?.category} placeholder="SaaS" />
+          <Input id="nextDueAt" type="date" {...register("nextDueAt")} />
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="tags">Tags</Label>
-        <Input id="tags" name="tags" defaultValue={initial?.tags?.join(", ")} placeholder="comma, separated" />
+        <Label htmlFor="category">Category</Label>
+        <Input id="category" {...register("category")} />
       </div>
 
-      <div className="flex justify-end gap-3 pt-2">
+      {/* tags input could be a chips control; keep simple text for now */}
+      <div className="flex gap-3 justify-end pt-2">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving…" : "Save"}
+        <Button type="submit" disabled={isSubmitting || formState.isSubmitting}>
+          {submitLabel ?? "Save"}
         </Button>
       </div>
     </form>

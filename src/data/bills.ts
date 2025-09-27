@@ -73,3 +73,27 @@ export async function deleteBill(id: string): Promise<void> {
   const { error } = await supabase.from("bills").delete().eq("id", id);
   if (error) throw error;
 }
+
+export async function updateBill(id: string, updates: Partial<BillRow>): Promise<BillRow> {
+  await requireUserId(); // ensures session
+  const { data, error } = await supabase
+    .from("bills")
+    .update({
+      name: updates.name,
+      merchant: updates.merchant ?? null,
+      amount: updates.amount,
+      currency: updates.currency,
+      cadence: updates.cadence,
+      interval_months: updates.interval_months,
+      next_due_at: updates.next_due_at,
+      category: updates.category ?? null,
+      tags: updates.tags ?? [],
+      source: updates.source,
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data!;
+}
