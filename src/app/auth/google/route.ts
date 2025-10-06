@@ -1,4 +1,3 @@
-// src/app/auth/google/route.ts
 import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
@@ -16,8 +15,8 @@ export async function GET(req: NextRequest) {
     provider: "google",
     options: {
       redirectTo: cb.toString(),
-      skipBrowserRedirect: true, // we perform the redirect
-      queryParams: { prompt }, // forward prompt=select_account|consent
+      skipBrowserRedirect: true,
+      queryParams: { prompt },
     },
   });
 

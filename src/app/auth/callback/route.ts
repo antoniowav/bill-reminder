@@ -1,4 +1,3 @@
-// src/app/auth/callback/route.ts
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -19,7 +18,6 @@ export async function GET(req: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      // use the deprecated get/set/remove bridge (stable across runtimes)
       cookies: {
         get(name: string) {
           return cookieStore.get(name)?.value;

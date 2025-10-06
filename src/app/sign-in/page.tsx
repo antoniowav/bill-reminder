@@ -34,7 +34,6 @@ export default function SignInPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
-  // swipe-up/down animation presets
   const dir = mode === "signup" ? 1 : -1;
   const baseTrans: Transition = prefersReducedMotion
     ? ({ duration: 0 } as unknown as Transition)
@@ -65,8 +64,6 @@ export default function SignInPage() {
       return;
     }
 
-    // --- SIGN UP FLOW ---
-    // 1) Server-side existence check (service role)
     const existsResp = await fetch("/api/auth/does-user-exist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -89,13 +86,12 @@ export default function SignInPage() {
     const { data, error: err } = await supabase.auth.signUp({
       email,
       password: pwd,
-      options: { emailRedirectTo: `${location.origin}/auth/callback?redirect=/bills` }
+      options: { emailRedirectTo: `${location.origin}/auth/callback?redirect=/bills` },
     });
     setLoading(false);
     if (err) return setError(err.message);
 
     if (data.user && !data.session) {
-      // Instead of only showing a notice, also navigate to the poller:
       router.replace(`/auth/wait?redirect=${encodeURIComponent(redirect)}`);
       return;
     }
@@ -105,7 +101,7 @@ export default function SignInPage() {
   function continueWithGoogle(prompt: "select_account" | "consent") {
     const redirectParam = new URLSearchParams(window.location.search).get("redirect") || "/bills";
     window.location.assign(
-      `/auth/google?redirect=${encodeURIComponent(redirectParam)}&prompt=${prompt}`
+      `/auth/google?redirect=${encodeURIComponent(redirectParam)}&prompt=${prompt}`,
     );
   }
 
@@ -120,7 +116,13 @@ export default function SignInPage() {
           animate="animate"
           exit="exit"
         >
-          <motion.div className="text-center mb-8" variants={itemVariants} initial="initial" animate="animate" exit="exit">
+          <motion.div
+            className="text-center mb-8"
+            variants={itemVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
             {mode === "signin" ? (
               <>
                 <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
@@ -129,7 +131,9 @@ export default function SignInPage() {
             ) : (
               <>
                 <h1 className="text-3xl font-semibold tracking-tight">Create your account</h1>
-                <p className="mt-2 text-sm text-neutral-500">Start tracking your bills in minutes</p>
+                <p className="mt-2 text-sm text-neutral-500">
+                  Start tracking your bills in minutes
+                </p>
               </>
             )}
           </motion.div>
@@ -199,12 +203,24 @@ export default function SignInPage() {
               exit="exit"
             >
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? (mode === "signin" ? "Signing in…" : "Creating…") : mode === "signin" ? "Sign in with email" : "Create account"}
+                {loading
+                  ? mode === "signin"
+                    ? "Signing in…"
+                    : "Creating…"
+                  : mode === "signin"
+                    ? "Sign in with email"
+                    : "Create account"}
               </Button>
             </motion.div>
           </motion.form>
 
-          <motion.div className="relative py-4" variants={itemVariants} initial="initial" animate="animate" exit="exit">
+          <motion.div
+            className="relative py-4"
+            variants={itemVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
             </div>

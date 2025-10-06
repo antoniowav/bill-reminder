@@ -1,14 +1,9 @@
-// src/app/(dashboard)/layout.tsx
 import { DashboardNav } from "@/components/DashboardNav/DashboardNav";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -22,15 +17,13 @@ export default async function DashboardLayout({
         getAll() {
           return cookieStore.getAll().map((c) => ({ name: c.name, value: c.value }));
         },
-        setAll(
-          cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>
-        ) {
+        setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
           cookiesToSet.forEach(({ name, value, options }) => {
             cookieStore.set({ name, value, ...options });
           });
         },
       },
-    }
+    },
   );
 
   const {

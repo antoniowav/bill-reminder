@@ -1,4 +1,3 @@
-// src/app/auth/wait/page.tsx
 "use client";
 
 import { supabase } from "@/lib/supabase";
@@ -28,12 +27,13 @@ export default function AuthWait() {
       }
 
       if (tries.current >= 60 && !done) {
-        setStatus("Still not signed in. Open the email on this device, or refresh after confirming.");
+        setStatus(
+          "Still not signed in. Open the email on this device, or refresh after confirming.",
+        );
         done = true;
       }
     };
 
-    // run immediately, then every second until done
     check();
     const id = window.setInterval(() => {
       if (!done) void check();
@@ -52,7 +52,8 @@ export default function AuthWait() {
         <h1 className="text-2xl font-semibold tracking-tight">Check your email</h1>
         <p className="mt-2 text-sm text-neutral-600">{status}</p>
         <p className="mt-4 text-sm text-neutral-500">
-          Tip: To auto-redirect here, open the confirmation link in <b>this same browser</b> and device.
+          Tip: To auto-redirect here, open the confirmation link in <b>this same browser</b> and
+          device.
         </p>
       </div>
     </main>

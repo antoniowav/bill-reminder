@@ -35,7 +35,6 @@ export async function POST(req: NextRequest) {
   const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceRole) {
-    // Don’t proceed; helps you catch misconfig
     return NextResponse.json(
       { error: "Missing SUPABASE env (URL or SERVICE_ROLE)", exists: false },
       { status: 500 },
@@ -48,7 +47,6 @@ export async function POST(req: NextRequest) {
 
   const emailLower = email.toLowerCase().trim();
 
-  // 1) Try auth.users (email/password users keep email here)
   const { data: uData, error: uErr } = await admin
     .schema("auth")
     .from("users")
@@ -60,25 +58,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ exists: true }, { status: 200 });
   }
 
-  // 2) Try auth.identities (SSO users often have email only here)
   const { data: iData, error: iErr } = await admin
     .schema("auth")
     .from("identities")
     .select("id")
-    .or(
-      // Some providers store email under different casings, stick to standard
-      `identity_data->>email.eq.${emailLower}`,
-    )
+    .or(`identity_data->>email.eq.${emailLower}`)
     .limit(1);
 
   if (iData && iData.length > 0) {
     return NextResponse.json({ exists: true }, { status: 200 });
   }
 
-  // If there were hard errors, surface something useful in dev (don’t leak prod)
   if (uErr || iErr) {
-    // You can log these server-side if needed
-    // console.error("exist check errors:", { uErr, iErr });
   }
 
   return NextResponse.json({ exists: false }, { status: 200 });

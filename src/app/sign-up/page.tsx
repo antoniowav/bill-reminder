@@ -27,27 +27,27 @@ export default function SignUpPage() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password: pwd,
-      options: { emailRedirectTo: `${location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}` },
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
+      },
     });
 
     setLoading(false);
 
     if (error) return setError(error.message);
 
-    // If email confirmations are ON, user must click the email link.
     if (data.user && !data.session) {
       setNotice("Check your inbox to confirm your email, then return here to continue.");
       return;
     }
 
-    // If confirmations are OFF, we’re already signed in.
     router.replace(redirect);
   }
 
   function continueWithGoogle(prompt: "select_account" | "consent") {
     const redirectParam = new URLSearchParams(window.location.search).get("redirect") || "/bills";
     window.location.assign(
-      `/auth/google?redirect=${encodeURIComponent(redirectParam)}&prompt=${prompt}`
+      `/auth/google?redirect=${encodeURIComponent(redirectParam)}&prompt=${prompt}`,
     );
   }
 
@@ -56,9 +56,7 @@ export default function SignUpPage() {
       <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow">
         <div className="text-center">
           <h1 className="text-3xl font-semibold tracking-tight">Create your account</h1>
-          <p className="mt-2 text-sm text-neutral-500">
-            Start tracking your bills in minutes
-          </p>
+          <p className="mt-2 text-sm text-neutral-500">Start tracking your bills in minutes</p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4">
